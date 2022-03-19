@@ -45,7 +45,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="container-fluid">
           <a class="navbar-brand">Online Voting System</a>
           <form class="d-flex">
-            <a href="../login/login.html" class="navbar-brand" id= "login1">Login</a>
+            <a href="../login/login.php" class="navbar-brand" id= "login1">Login</a>
           </form>
         </div>
       </nav>

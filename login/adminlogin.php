@@ -7,7 +7,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $email = $_POST['email'];
         $pass = $_POST['password'];
        
-       $sql = "Select * from regdetails where email='$email' AND password='$pass' ";  
+       $sql = "Select * from adminlogin where email='$email' AND pass='$pass' ";  
        $result = mysqli_query($conn , $sql);
        $num = mysqli_num_rows($result);
        if($num >= 1){
@@ -83,7 +83,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         <p>Enter your credentials to access your account</p>
       </div>
 
-      <form action="../login/login.php" method= "post">
+      <form action="../login/adminlogin.php" method= "post">
         <div class="user">
           <i class="bx bxs-user-circle"></i>
           <input type="text" name = "email" placeholder="Enter your username" />
