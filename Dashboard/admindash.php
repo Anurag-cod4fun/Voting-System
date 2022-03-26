@@ -13,7 +13,7 @@
         <nav class="admin-nav">
             <ul>
                 <li class="nav-brand"><h2 id="header1">OnlineVoting</h2></li>
-                <li class="nav-logout"><a href="#" class="link-logout">Logout</a></li>
+                <li class="nav-logout"><a href="../Dashboard/logout.php" class="link-logout">Logout</a></li>
             </ul>
         </nav>
     </div>
@@ -38,20 +38,25 @@
       </script>
       
     </div>
-
+    
     <div class="card" id="card1">
       <img src="https://www.kindpng.com/picc/m/495-4952535_create-digital-profile-icon-blue-user-profile-icon.png" alt="Avatar" style="width:100%" id="cardimg">
       <div class="container">
         <h4 id="card-post"><b>ADD CANDIDATES</b></h4> 
-        <p><button class="card-btn">ADD</button></p> 
+        <form action="../Dashboard/candidates.php" method="get">
+          <p><button class="card-btn">ADD</button></p> 
+        </form>  
       </div>
     </div>
+  
     <div class="card" id="card2">
       <!-- <img src="www.freeiconspng.com/uploads/results-icon-png-10.png" width="350" alt="Download Results Icon" style="width:100%" id="cardimg"> -->
       <a href="#" title="Image from freeiconspng.com"><img src="https://www.freeiconspng.com/uploads/results-icon-png-10.png" width="309" alt="Download Results Icon" /></a>
       <div class="container">
-        <h4 id="card-post"><b>CHECK RESULTS</b></h4> 
-        <p><button class="card-btn">ADD</button></p> 
+        <h4 id="card-post"><b>CHECK RESULTS</b></h4>
+        <form action="../Dashboard/results.php" method="get">
+          <p><button class="card-btn">Check Results</button></p> 
+        </form>
       </div>
     </div>
      

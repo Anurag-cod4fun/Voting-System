@@ -1,4 +1,5 @@
 <?php
+session_start(); //1
   $login = false;
   $showError = false;
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -6,6 +7,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
        
         $email = $_POST['email'];
         $pass = $_POST['password'];
+
+       $sql2 = "Select * from cand"; //2
+       $result2 = mysqli_query($conn, $sql2);
+       $groupdata = mysqli_fetch_all($result2, MYSQLI_ASSOC); 
+       $_SESSION["groupdata"] = $groupdata;
        
        $sql = "Select * from adminlogin where email='$email' AND pass='$pass' ";  
        $result = mysqli_query($conn , $sql);

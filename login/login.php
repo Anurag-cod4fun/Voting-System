@@ -1,4 +1,5 @@
 <?php
+session_start();
   $login = false;
   $showError = false;
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -7,15 +8,26 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $email = $_POST['email'];
         $pass = $_POST['password'];
        
-       $sql = "Select * from regdetails where email='$email' AND password='$pass' ";  
+       $sql = "Select * from regdetails where email='$email' AND password='$pass' "; 
        $result = mysqli_query($conn , $sql);
        $num = mysqli_num_rows($result);
+
+       $sql2 = "Select * from cand"; 
+       $result2 = mysqli_query($conn, $sql2);
+
+
+       $userdata = mysqli_fetch_array($result); 
+       $groupdata = mysqli_fetch_all($result2, MYSQLI_ASSOC); 
+
+       $_SESSION["userdata"] = $userdata; 
+       $_SESSION["groupdata"] = $groupdata; 
+
        if($num >= 1){
            $login = true;
            session_start();
            $_SESSION['loggedin'] = true;
            $_SESSION['email'] = $email;
-           header("location: ../Dashboard/admindash.php");
+           header("location: ../Dashboard/userdash.php");
        }
         
     else{
