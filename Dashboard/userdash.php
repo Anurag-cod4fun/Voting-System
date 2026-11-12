@@ -1,8 +1,7 @@
 <?php
     session_start();
-    if(!isset($_SESSION['userdata'])){
-        header("location: ../login/login.php");
-    }
+    require_once '../partials/security.php';
+    require_user();
 
     $userdata = $_SESSION['userdata'];
     $groupdata = $_SESSION['groupdata'];
@@ -20,7 +19,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="userdash.css">
+    <link rel="stylesheet" href="userdash.css?v=2">
     <title>Online Voting</title>
 </head>
 <body>
@@ -32,12 +31,17 @@
             </ul>
         </nav>
 </div>
-        <marquee direction="right" height="20" width="100%" bgcolor="red" id="movingtxt">WELCOME !!! Voting is your number 1 priority</marquee>
+        <div id="movingtxt">Your voice shapes the future. Review each candidate carefully before casting your vote.</div>
         <div id="mainsection">
-            <div class="profile"><b>Name : </b> <?php echo $userdata['firstname'], " ",$userdata['lastname'] ?>
-                <br><b> Age :</b> <?php echo $userdata['age']?>
-                <br><b> Gender :</b> <?php echo $userdata['gender']?>
-                <br><b> Email :</b> <?php echo $userdata['email']?>
+            <div class="dashboard-heading">
+                <p class="eyebrow">VOTER DASHBOARD</p>
+                <h1>Make your choice count.</h1>
+                <p>Review the candidates below and cast one secure vote.</p>
+            </div>
+            <div class="profile"><b>Name : </b> <?php echo e($userdata['firstname'] . " " . $userdata['lastname']); ?>
+                <br><b> Age :</b> <?php echo e($userdata['age']); ?>
+                <br><b> Gender :</b> <?php echo e($userdata['gender']); ?>
+                <br><b> Email :</b> <?php echo e($userdata['email']); ?>
                 <br><b> Status :</b> <?php echo $status ?>
             </div>
 
@@ -47,16 +51,16 @@
                         for($i=0; $i<count($groupdata); $i++) {
                             ?>
                             <div>
-                                <img src="../Dashboard/uploads/<?php echo $groupdata[$i]['DPimage'] ?>" style="float : right" height="100" width = "100">
-                                <b>Name: </b><?php echo $groupdata[$i]['Name'] ?><br>
-                                <b>Party Name: </b><?php echo $groupdata[$i]['PartyName'] ?><br>
+                                <img src="../Dashboard/uploads/<?php echo e($groupdata[$i]['DPimage']); ?>" style="float : right" height="100" width="100" alt="<?php echo e($groupdata[$i]['Name']); ?>">
+                                <b>Name: </b><?php echo e($groupdata[$i]['Name']); ?><br>
+                                <b>Party Name: </b><?php echo e($groupdata[$i]['PartyName']); ?><br>
                                 
                                 <br>
                                 <br>
                                 
                                 <form action="../Dashboard/vote.php" method="POST">
-                                    <input type="hidden" name="gvotes" value = "<?php echo $groupdata[$i]['votes'] ?> ">
-                                    <input type="hidden" name="gid" value = "<?php echo $groupdata[$i]['id'] ?> ">
+                                    <input type="hidden" name="gid" value="<?php echo e($groupdata[$i]['id']); ?>">
+                                    <input type="hidden" name="csrf_token" value="<?php echo e(csrf_token()); ?>">
                                    
                                     <?php
                                         if ($_SESSION['userdata']['status'] == 0) {
@@ -66,7 +70,7 @@
                                         }
                                         else {
                                             ?>
-                                            <button disabled type="buttun"  name="votebtn" value = "Voted" id="voted">Voted</button>
+                                            <button disabled type="button" name="votebtn" value="Voted" id="voted">Voted</button>
                                             <?php
                                         }
                                         ?>

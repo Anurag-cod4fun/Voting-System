@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `adminlogin` (
   `email` varchar(30) NOT NULL,
-  `pass` varchar(20) NOT NULL
+  `pass` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -37,7 +37,7 @@ CREATE TABLE `adminlogin` (
 --
 
 INSERT INTO `adminlogin` (`email`, `pass`) VALUES
-('anuragspatil88@gmail.com', 'patilanurag');
+('anuragspatil88@gmail.com', '$2y$10$uXrGZDKEZwfE0d.4fE7QZey4i17R1YEhwKHuMuk39c7SyI4J./R1G');
 
 -- --------------------------------------------------------
 
@@ -77,7 +77,7 @@ CREATE TABLE `regdetails` (
   `gender` varchar(8) NOT NULL,
   `age` int(11) NOT NULL,
   `email` varchar(30) NOT NULL,
-  `password` varchar(20) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `status` int(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -86,12 +86,12 @@ CREATE TABLE `regdetails` (
 --
 
 INSERT INTO `regdetails` (`sr`, `firstname`, `lastname`, `gender`, `age`, `email`, `password`, `status`) VALUES
-(19, 'Anurag', 'Patil', 'Male', 19, 'patilanurag405@gmail.com', 'abc', 1),
-(21, 'Elon', 'Musk', 'Male', 55, 'elonmusk@gmail.com', 'tesla', 1),
-(26, 'Mohan', 'Sharma', 'Male', 55, 'mohansharma44@gmail.com', 'game', 1),
-(27, 'Samruddhi', 'Patil', 'Female', 21, 'samruddhipatil159@gmail.com', 'sam', 1),
-(28, 'Logan', 'Paul', 'Male', 32, 'loganpaul@gmail.com', 'logan', 1),
-(29, 'Rohan', 'Patel', 'Male', 45, 'rohanpatel@gmail.com', 'patel', 1);
+(19, 'Anurag', 'Patil', 'Male', 19, 'patilanurag405@gmail.com', '$2y$10$E6FxeKVUXGbA80YFsLkAxeKCidG5Sv/AtS5Vywt6IQeEqxd4Cwe4G', 1),
+(21, 'Elon', 'Musk', 'Male', 55, 'elonmusk@gmail.com', '$2y$10$4F44c3JcKqn0MIVfzPQuwOYXp4zkbr3EA35OMhietcb1QvMVTL9vK', 1),
+(26, 'Mohan', 'Sharma', 'Male', 55, 'mohansharma44@gmail.com', '$2y$10$X5MNpBD5bx6O5oosyIz51.mS3hSYJ2Rfy3XghdVbNbLd3LWSVpoEK', 1),
+(27, 'Samruddhi', 'Patil', 'Female', 21, 'samruddhipatil159@gmail.com', '$2y$10$sSaTM0V0v9jMr8E8miX8gOMTi4I.oBZ/w4raoFOABhU5cvMko8HBi', 1),
+(28, 'Logan', 'Paul', 'Male', 32, 'loganpaul@gmail.com', '$2y$10$8FiS/spPTPnxzKm80SyXXe73Ec37CJkIFAKIb0ZpQn7VK3dG.geI2', 1),
+(29, 'Rohan', 'Patel', 'Male', 45, 'rohanpatel@gmail.com', '$2y$10$0WWIgakvkyvtERIDYqS4uORit/6yJSI.2ox9BUKPhAKc9SnIf/9m.', 1);
 
 --
 -- Indexes for dumped tables
@@ -107,7 +107,8 @@ ALTER TABLE `cand`
 -- Indexes for table `regdetails`
 --
 ALTER TABLE `regdetails`
-  ADD PRIMARY KEY (`sr`);
+  ADD PRIMARY KEY (`sr`),
+  ADD UNIQUE KEY `uq_regdetails_email` (`email`);
 
 --
 -- AUTO_INCREMENT for dumped tables

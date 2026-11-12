@@ -1,28 +1,30 @@
 <?php
 session_start();
+require_once '../partials/security.php';
 
-// Only an authenticated administrator may add candidates.
-if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['email'])){
-    header("location: ../login/adminlogin.php");
-    exit();
-}
+require_admin();
 
 $uploadError = false;
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
+require_csrf();
 include '../partials/dbconnect.php';
 
-$name = $_POST['name'];
-$Partyname = $_POST['partyname'];
-$role = $_POST['post'];
+$name = trim(isset($_POST['name']) ? $_POST['name'] : '');
+$Partyname = trim(isset($_POST['partyname']) ? $_POST['partyname'] : '');
+$role = trim(isset($_POST['post']) ? $_POST['post'] : '');
 
 // Allow-list of image extensions. Anything else (php, phtml, phar, ...) is rejected.
 $allowed = array('jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif');
 
-$ext = strtolower(pathinfo($_FILES['img']['name'], PATHINFO_EXTENSION));
-$tmp_name = $_FILES['img']['tmp_name'];
+$ext = isset($_FILES['img']) ? strtolower(pathinfo($_FILES['img']['name'], PATHINFO_EXTENSION)) : '';
+$tmp_name = isset($_FILES['img']) ? $_FILES['img']['tmp_name'] : '';
 
-if(!isset($_FILES['img']) || $_FILES['img']['error'] !== UPLOAD_ERR_OK || !array_key_exists($ext, $allowed)){
+if(strlen($name) < 1 || strlen($name) > 15 || strlen($Partyname) < 1 || strlen($Partyname) > 15 ||
+   strlen($role) < 1 || strlen($role) > 15){
+    $uploadError = "Candidate details are invalid.";
+}
+elseif(!isset($_FILES['img']) || $_FILES['img']['error'] !== UPLOAD_ERR_OK || !array_key_exists($ext, $allowed)){
     $uploadError = "Only JPG, JPEG, PNG and GIF images are allowed.";
 }
 elseif($_FILES['img']['size'] > 2 * 1024 * 1024){
@@ -40,7 +42,7 @@ if($uploadError === false){
     // Never trust the client filename: generate the stored name server-side.
     $image = bin2hex(random_bytes(16)) . '.' . $ext;
     $uploadDir = realpath(__DIR__ . '/uploads');
-    $destination = $uploadDir . DIRECTORY_SEPARATOR . $image;
+    $destination = $uploadDir === false ? '' : $uploadDir . DIRECTORY_SEPARATOR . $image;
 
     if($uploadDir === false || !move_uploaded_file($tmp_name, $destination)){
         $uploadError = "Could not save the uploaded image.";
@@ -66,7 +68,7 @@ if($uploadError === false){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="candidates.css">
+    <link rel="stylesheet" href="candidates.css?v=2">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title>Add Candidate</title>
 </head>
@@ -79,9 +81,12 @@ if($uploadError === false){
             </ul>
         </nav>
     </div>
-    <div>
-        <h1 class="headline">ADD NEW CANDIDATE</h1>
-    </div>
+    <main>
+      <div class="page-intro">
+        <p class="eyebrow">ELECTION SETUP</p>
+        <h1 class="headline">Add a candidate</h1>
+        <p>Create a clear, accurate profile for the ballot.</p>
+      </div>
 
     <?php if($uploadError !== false){ ?>
     <div class="alert alert-danger" role="alert" style="max-width:600px;margin:0 auto 15px;">
@@ -91,25 +96,25 @@ if($uploadError === false){
 
     <div class="form-div">
         <form action="candidates.php" method= "POST" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="<?php echo e(csrf_token()); ?>">
             <div class="form-group">
-              <label for="exampleInputEmail1">Full Name</label>
+            <label for="exampleInputEmail1">Candidate name</label>
               <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter name" name = "name">
-              <small id="emailHelp" class="form-text text-muted">.</small>
             </div>
             <div class="form-group">
-              <label for="exampleInputPassword1">Party name</label>
+              <label for="exampleInputPassword1">Party or group</label>
               <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Party" name="partyname">
             </div>
             
                     <div>
-                        <label for="img">Select image:</label>
-                        <input type="file" name="img" class="form-control">
+                        <label for="img">Profile image</label>
+                        <input type="file" name="img" id="img" class="form-control" accept=".jpg,.jpeg,.png,.gif" required>
                     </div>
 
                     <div class="form-group">
                         <br>
-                        <label for="img">Position</label>
-                        <input type="text" placeholder="Enter Position" name="post" class="form-control">
+                        <label for="post">Position</label>
+                        <input type="text" placeholder="Enter position" id="post" name="post" class="form-control">
                     </div>
             <div class="form-check">
               <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
@@ -119,5 +124,6 @@ if($uploadError === false){
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>
     </div>
+    </main>
 </body>
 </html>

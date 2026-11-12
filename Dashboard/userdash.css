@@ -1,97 +1,31 @@
-*{
-    margin: 0;
-    padding: 0;
-}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-  }
-  
-  .nav-brand {
-    float: left;
-    
-  }
-  #header1{
-      margin: 12%;
-      color: white;
-  }
-  .nav-logout {
-    float: right;
-  }
-  
-  li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    margin: 5px;
-    font-size: 20px;
-  }
-
-  #movingtxt {
-      color: rgb(232, 224, 3);
-      font-weight: bolder;
-      font-size: larger;
-  }
-
-  #mainsection .profile{
-    
-    padding: 20px;
-    margin: auto;
-    border: 5px solid rgb(20, 20, 20);
-    border-radius: 15px;
-    width: 30%;
-    margin-top: 40px;
-  }
-
-  #mainsection #group {
-    
-    background-color: white;
-    /* border: 5px solid red; */
-    width: 55%;
-    margin: auto;
-    margin-top:45px ;
-    padding: 20px;
-  }
-
-  #votebtn {
-    display: inline-block;
-    border-radius: 4px;
-    background-color: #13bb21;
-    border: none;
-    color: #FFFFFF;
-    text-align: center;
-    font-size: 20px;
-    padding: 10px;
-    width: 100px;
-    transition: all 0.5s;
-    cursor: pointer;
-    margin: 5px;
-  }
-
-  #voted {
-    display: inline-block;
-    border-radius: 4px;
-    background-color: #5f5355;
-    border: none;
-    color: #FFFFFF;
-    text-align: center;
-    font-size: 20px;
-    padding: 10px;
-    width: 100px;
-    transition: all 0.5s;
-    cursor: pointer;
-    margin: 5px;
-  }
-
-  
-
- 
-
- 
-
+:root { --navy: #10233f; --teal: #0c9b8a; --gold: #f2b84b; --ink: #17233a; --muted: #68768b; --paper: #f5f8fc; }
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); font-family: 'DM Sans', sans-serif; background: var(--paper); }
+.admin-nav { padding: 0 6vw; background: var(--navy); box-shadow: 0 8px 25px rgba(16,35,63,.12); }
+.admin-nav ul { display: flex; align-items: center; justify-content: space-between; max-width: 1240px; min-height: 72px; margin: auto; padding: 0; list-style: none; }
+.nav-brand h2 { margin: 0; color: #fff; font: 700 1.3rem 'Space Grotesk', sans-serif; }
+.nav-brand h2::before { margin-right: 9px; color: var(--gold); content: '●'; font-size: .8rem; }
+.nav-logout a { padding: 10px 16px; border: 1px solid rgba(255,255,255,.25); border-radius: 9px; color: #fff; font-size: .86rem; font-weight: 700; text-decoration: none; }
+.nav-logout a:hover { border-color: var(--gold); color: var(--gold); }
+#movingtxt { display: block; height: auto; padding: 10px 6vw; color: var(--navy); background: #fff0cf; font-size: .8rem; font-weight: 700; letter-spacing: .04em; }
+#mainsection { max-width: 1120px; margin: 38px auto 70px; padding: 0 24px; }
+.dashboard-heading { margin-bottom: 24px; }
+.dashboard-heading .eyebrow { margin: 0 0 8px; color: var(--teal); font-size: .72rem; font-weight: 700; letter-spacing: .14em; }
+.dashboard-heading h1 { margin: 0 0 8px; color: var(--navy); font: 700 clamp(2rem, 4vw, 3rem) 'Space Grotesk', sans-serif; letter-spacing: -.05em; }
+.dashboard-heading p:last-child { margin: 0; color: var(--muted); }
+#mainsection .profile { position: relative; margin-bottom: 32px; padding: 26px 30px; border-radius: 18px; color: var(--muted); background: #fff; box-shadow: 0 12px 35px rgba(16,35,63,.07); line-height: 1.9; }
+#mainsection .profile::before { position: absolute; top: 0; bottom: 0; left: 0; width: 5px; border-radius: 18px 0 0 18px; content: ''; background: var(--teal); }
+#mainsection .profile b { color: var(--navy); }
+#group { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; }
+#group > div { min-height: 230px; padding: 22px; border: 1px solid #e4ebf3; border-radius: 16px; background: #fff; box-shadow: 0 10px 28px rgba(16,35,63,.05); }
+#group > div:hover { transform: translateY(-3px); box-shadow: 0 16px 35px rgba(16,35,63,.1); transition: .2s; }
+#group img { border-radius: 12px; object-fit: cover; }
+#group b { color: var(--navy); }
+#group hr { border: 0; border-top: 1px solid #edf1f5; }
+#votebtn, #voted { margin-top: 12px; padding: 11px 22px; border: 0; border-radius: 9px; color: #fff; font: 700 .9rem 'DM Sans', sans-serif; }
+#votebtn { background: var(--teal); cursor: pointer; }
+#votebtn:hover { background: #087c70; }
+#voted { background: #b6c0cd; cursor: not-allowed; }
+@media (max-width: 620px) { .admin-nav { padding: 0 20px; } #mainsection { margin-top: 25px; padding: 0 16px; } }

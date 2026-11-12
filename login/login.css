@@ -1,76 +1,158 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: poppins;
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+  --navy: #10233f;
+  --navy-deep: #071629;
+  --teal: #0c9b8a;
+  --gold: #f2b84b;
+  --ink: #17233a;
+  --muted: #68768b;
+  --line: #dce5ef;
+  --paper: #f5f8fc;
+  --white: #ffffff;
 }
+
+* { box-sizing: border-box; }
+
 body {
-  background-image: url(../Registration/img/emma-ou-yUa8ccbdphA-unsplash.jpg);
-  background-color: #f2f4ff;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  background: var(--paper);
 }
-.container {
-  width: 400px;
-  height: 300px;
-  background-color: #fff;
-  margin: 150px auto;
-  border-radius: 11px;
-  padding: 25px 50px;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+body::before {
+  position: fixed;
+  inset: 0 52% 0 0;
+  z-index: -1;
+  content: '';
+  background:
+    radial-gradient(circle at 18% 20%, rgba(12, 155, 138, .28), transparent 34%),
+    linear-gradient(145deg, var(--navy-deep), var(--navy));
 }
-/* top-header */
-.top-header h3 {
-  text-align: center;
-  color: #495d76;
-}
-.top-header p {
-  color: #cecfd3;
-  font-size: 13px;
-  text-align: center;
-  margin-top: 5px;
-}
-/* top-header */
-/* form */
-.user input,
-.pass input {
+
+.navbar {
+  position: absolute;
+  top: 0;
   width: 100%;
-  height: 35px;
-  border: none;
-  border: 1px solid #e6e6e6;
-  border-radius: 6px;
-  outline: none;
-  padding: 0 40px;
+  padding: 22px 6vw;
+  background: transparent !important;
 }
-::placeholder {
-  color: #9ca5b4;
-  font-size: 12px;
+
+.navbar-brand {
+  color: var(--white) !important;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: -.03em;
 }
-.user i,
-.pass i {
-  position: relative;
-  top: 31px;
-  right: -10px;
-  color: #3981ed;
+
+#login1 {
+  color: var(--white) !important;
+  font-size: .9rem;
+  font-weight: 600;
+  text-decoration: none;
 }
-/* form */
-/* button */
+
+.container {
+  width: min(460px, calc(100% - 40px));
+  min-height: 100vh;
+  margin: 0 10% 0 auto;
+  padding: 150px 0 40px;
+}
+
+.top-header { margin-bottom: 30px; }
+
+.top-header h3 {
+  margin-bottom: 10px;
+  color: var(--navy);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  letter-spacing: -.04em;
+}
+
+.top-header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.user, .pass { position: relative; margin-bottom: 16px; }
+
+.user i, .pass i {
+  position: absolute;
+  top: 50%;
+  left: 17px;
+  z-index: 1;
+  color: var(--teal);
+  font-size: 1.2rem;
+  transform: translateY(-50%);
+}
+
+.user input, .pass input {
+  width: 100%;
+  height: 54px;
+  padding: 0 18px 0 48px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  outline: 0;
+  color: var(--ink);
+  background: var(--white);
+  box-shadow: 0 8px 22px rgba(16, 35, 63, .05);
+}
+
+.user input:focus, .pass input:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 4px rgba(12, 155, 138, .12);
+}
+
+::placeholder { color: #9aa8b9; }
+
 .btn {
-  display: flex;
-  justify-content: center;
-  margin-top: 25px;
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  padding: 0;
 }
+
 .btn button {
   width: 100%;
-  border: none;
-  height: 35px;
-  background-color: #277ffd;
-  color: #fff;
-  border-radius: 6px;
+  height: 54px;
+  border: 0;
+  border-radius: 12px;
+  color: var(--white);
+  background: var(--teal);
+  font: 700 1rem 'DM Sans', sans-serif;
   cursor: pointer;
+  box-shadow: 0 12px 24px rgba(12, 155, 138, .22);
+  transition: transform .2s, background .2s;
 }
-/* button */
-p.last {
+
+.btn button:hover { background: #087c70; transform: translateY(-1px); }
+
+.last {
+  width: min(460px, calc(100% - 40px));
+  margin: -110px 10% 0 auto;
+  color: var(--muted);
+  font-size: .85rem;
   text-align: center;
-  position: relative;
-  bottom: 120px;
-  font-size: 12px;
+}
+
+.last a { color: var(--teal); font-weight: 700; }
+
+.alert {
+  position: fixed;
+  top: 86px;
+  right: 24px;
+  z-index: 5;
+  border: 0;
+  border-radius: 10px;
+}
+
+@media (max-width: 900px) {
+  body::before { inset: 0 0 62% 0; }
+  .navbar { padding: 20px; }
+  .container { width: min(460px, calc(100% - 40px)); margin: auto; padding-top: 145px; }
+  .top-header h3 { color: #fff; font-size: 1.75rem; }
+  .top-header p { color: rgba(255,255,255,.78); }
+  .last { width: calc(100% - 40px); margin: -20px auto 0; }
 }

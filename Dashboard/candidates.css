@@ -1,49 +1,20 @@
-* {
-    margin: 0px;
-    padding: 0px;
-}
-
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-  }
-  
-  .nav-brand {
-    float: left;
-    
-  }
-  #header1{
-      margin: 12%;
-      color: white;
-  }
-  .nav-logout {
-    float: right;
-  }
-  
-  li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    margin: 5px;
-    font-size: 20px;
-  }
-  
-  li a:hover {
-    background-color: #111;
-  }
-
-  .headline {
-      text-align: center;
-      margin-top: 17px;
-  }
-
-.form-div {
-    width: 60%;
-    margin-left: 20%;
-}
-
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+:root { --navy: #10233f; --teal: #0c9b8a; --gold: #f2b84b; --ink: #17233a; --muted: #68768b; --paper: #f5f8fc; }
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); font-family: 'DM Sans', sans-serif; background: var(--paper); }
+.admin-nav { padding: 0 6vw; background: var(--navy); }
+.admin-nav ul { display: flex; justify-content: space-between; align-items: center; min-height: 72px; margin: 0; padding: 0; list-style: none; }
+.nav-brand h2 { margin: 0; color: #fff; font: 700 1.3rem 'Space Grotesk', sans-serif; }
+.nav-brand h2::before { margin-right: 9px; color: var(--gold); content: '●'; font-size: .8rem; }
+.nav-logout a { color: #fff; font-weight: 700; text-decoration: none; }
+.page-intro { width: min(720px, calc(100% - 40px)); margin: 45px auto 25px; }
+.eyebrow { margin: 0 0 8px; color: var(--teal); font-size: .72rem; font-weight: 700; letter-spacing: .14em; }
+.headline { margin: 0 0 8px; color: var(--navy); font: 700 2rem 'Space Grotesk', sans-serif; }
+.page-intro > p:last-child { margin: 0; color: var(--muted); }
+.form-div { width: min(720px, calc(100% - 40px)); margin: auto; padding: 34px 40px; border: 1px solid #e1e9f2; border-radius: 18px; background: #fff; box-shadow: 0 14px 35px rgba(16,35,63,.08); }
+.form-control { min-height: 48px; border-color: #dce5ef; border-radius: 9px; }
+.form-control:focus { border-color: var(--teal); box-shadow: 0 0 0 4px rgba(12,155,138,.12); }
+.btn-primary { border: 0; border-radius: 9px; padding: 12px 25px; background: var(--teal); font-weight: 700; }
+.btn-primary:hover { background: #087c70; }
+.alert { width: min(720px, calc(100% - 40px)); margin: 22px auto; border: 0; border-radius: 10px; }
+@media (max-width: 620px) { .form-div { padding: 25px 20px; } .headline { font-size: 1.6rem; } }

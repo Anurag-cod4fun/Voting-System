@@ -7,7 +7,8 @@ $database = "pblvoting";
 $conn = mysqli_connect($server , $username, $password, $database);
 if (!$conn)
 {
-
-    die("Error". mysql_connect_error());
+    die("Database connection failed.");
 }
+
+mysqli_set_charset($conn, 'utf8mb4');
 ?>

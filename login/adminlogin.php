@@ -1,30 +1,36 @@
 <?php
 session_start(); //1
+require_once '../partials/security.php';
   $login = false;
   $showError = false;
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
         include '../partials/dbconnect.php';
+        require_csrf();
        
-        $email = trim($_POST['email']);
-        $pass = $_POST['password'];
-
-       $sql2 = "Select * from cand"; //2
-       $result2 = mysqli_query($conn, $sql2);
-       $groupdata = mysqli_fetch_all($result2, MYSQLI_ASSOC); 
-       $_SESSION["groupdata"] = $groupdata;
+        $email = trim(isset($_POST['email']) ? $_POST['email'] : '');
+        $pass = isset($_POST['password']) ? $_POST['password'] : '';
        
-       $stmt = mysqli_prepare($conn, "Select * from adminlogin where email=? AND pass=?");
-       mysqli_stmt_bind_param($stmt, "ss", $email, $pass);
+       $stmt = mysqli_prepare($conn, "SELECT * FROM adminlogin WHERE email=? LIMIT 1");
+       mysqli_stmt_bind_param($stmt, "s", $email);
        mysqli_stmt_execute($stmt);
        $result = mysqli_stmt_get_result($stmt);
-       $num = ($result === false) ? 0 : mysqli_num_rows($result);
+       $admin = $result === false ? null : mysqli_fetch_assoc($result);
        mysqli_stmt_close($stmt);
-       if($num >= 1){
+       if($admin && authenticate_password($pass, $admin['pass'])){
+           if (!password_verify($pass, $admin['pass'])) {
+               $newHash = password_hash($pass, PASSWORD_DEFAULT);
+               $update = mysqli_prepare($conn, "UPDATE adminlogin SET pass=? WHERE email=?");
+               mysqli_stmt_bind_param($update, "ss", $newHash, $email);
+               mysqli_stmt_execute($update);
+               mysqli_stmt_close($update);
+           }
            $login = true;
-           session_start();
+           session_regenerate_id(true);
            $_SESSION['loggedin'] = true;
            $_SESSION['email'] = $email;
+           $_SESSION['role'] = 'admin';
            header("location: ../Dashboard/admindash.php");
+           exit();
        }
         
     else{
@@ -93,9 +99,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       </div>
 
       <form action="../login/adminlogin.php" method= "post">
+        <input type="hidden" name="csrf_token" value="<?php echo e(csrf_token()); ?>">
         <div class="user">
           <i class="bx bxs-user-circle"></i>
-          <input type="text" name = "email" placeholder="Enter your username" />
+          <input type="email" name="email" placeholder="Enter your email" required />
         </div>
         <div class="pass">
           <i class="bx bxs-lock-alt"></i>
@@ -107,6 +114,5 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       </div>
     </form>
     <p class="last">Forgot your password? <a href="#"> Reset Password </a></p>
-    <script src="/app.js"></script>
   </body>
 </html>

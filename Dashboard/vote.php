@@ -1,24 +1,38 @@
 
 <?php
 session_start();
+require_once '../partials/security.php';
+require_user();
+require_csrf();
 
 include ('../partials/dbconnect.php');
 
-$votes = $_POST['gvotes'];
-$total_votes = $votes + 1;
-$gid = $_POST['gid'];
+$gid = filter_input(INPUT_POST, 'gid', FILTER_VALIDATE_INT);
 $uid = $_SESSION['userdata']['sr'];
 
-$update_votes = mysqli_query($conn, "UPDATE cand SET votes='$total_votes' WHERE id='$gid' ");
-$update_user_status = mysqli_query($conn, "UPDATE regdetails SET status=1 WHERE sr='$uid' ");
+if ($gid === false) {
+    http_response_code(400);
+    exit('Invalid candidate.');
+}
 
+mysqli_begin_transaction($conn);
+$statusStmt = mysqli_prepare($conn, "UPDATE regdetails SET status=1 WHERE sr=? AND status=0");
+mysqli_stmt_bind_param($statusStmt, "i", $uid);
+mysqli_stmt_execute($statusStmt);
+$statusUpdated = mysqli_stmt_affected_rows($statusStmt) === 1;
+mysqli_stmt_close($statusStmt);
 
-if($update_votes and $update_user_status){
-    $sql2 = "Select * from cand"; 
-    $result2 = mysqli_query($conn, $sql2);
-    $groupdata = mysqli_fetch_all($result2, MYSQLI_ASSOC);
-    $_SESSION["userdata"]['status'] = 1; 
-    $_SESSION["groupdata"] = $groupdata;
+$voteStmt = mysqli_prepare($conn, "UPDATE cand SET votes=votes+1 WHERE id=?");
+mysqli_stmt_bind_param($voteStmt, "i", $gid);
+mysqli_stmt_execute($voteStmt);
+$voteUpdated = mysqli_stmt_affected_rows($voteStmt) === 1;
+mysqli_stmt_close($voteStmt);
+
+if($statusUpdated && $voteUpdated){
+    mysqli_commit($conn);
+    $result2 = mysqli_query($conn, "SELECT * FROM cand ORDER BY id");
+    $_SESSION["groupdata"] = $result2 ? mysqli_fetch_all($result2, MYSQLI_ASSOC) : array();
+    $_SESSION["userdata"]['status'] = 1;
     echo '
         <script>
         alert("Successfully Voted!");
@@ -28,6 +42,7 @@ if($update_votes and $update_user_status){
         
 }
 else {
+    mysqli_rollback($conn);
     echo '
     <script>
     alert("Some Error Occured!");

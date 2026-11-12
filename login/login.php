@@ -1,40 +1,41 @@
 <?php
 session_start();
+require_once '../partials/security.php';
   $login = false;
   $showError = false;
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
         include '../partials/dbconnect.php';
+        require_csrf();
        
-        $email = trim($_POST['email']);
-        $pass = $_POST['password'];
+        $email = trim(isset($_POST['email']) ? $_POST['email'] : '');
+        $pass = isset($_POST['password']) ? $_POST['password'] : '';
        
-       $sql2 = "Select * from cand"; 
-       $result2 = mysqli_query($conn, $sql2);
-       $groupdata = mysqli_fetch_all($result2, MYSQLI_ASSOC); 
-
-       $stmt = mysqli_prepare($conn, "Select * from regdetails where email=? AND password=?");
-       mysqli_stmt_bind_param($stmt, "ss", $email, $pass);
+       $stmt = mysqli_prepare($conn, "SELECT * FROM regdetails WHERE email=? LIMIT 1");
+       mysqli_stmt_bind_param($stmt, "s", $email);
        mysqli_stmt_execute($stmt);
        $result = mysqli_stmt_get_result($stmt);
-       if($result === false){
-           $num = 0;
-           $userdata = null;
-       }
-       else{
-           $num = mysqli_num_rows($result);
-           $userdata = mysqli_fetch_array($result); 
-       }
+       $userdata = $result === false ? null : mysqli_fetch_assoc($result);
        mysqli_stmt_close($stmt); 
 
-       $_SESSION["userdata"] = $userdata; 
-       $_SESSION["groupdata"] = $groupdata; 
-
-       if($num >= 1){
+       if($userdata && authenticate_password($pass, $userdata['password'])){
+           if (!password_verify($pass, $userdata['password'])) {
+               $newHash = password_hash($pass, PASSWORD_DEFAULT);
+               $update = mysqli_prepare($conn, "UPDATE regdetails SET password=? WHERE sr=?");
+               mysqli_stmt_bind_param($update, "si", $newHash, $userdata['sr']);
+               mysqli_stmt_execute($update);
+               mysqli_stmt_close($update);
+               $userdata['password'] = $newHash;
+           }
+           $groupResult = mysqli_query($conn, "SELECT * FROM cand ORDER BY id");
+           $_SESSION["userdata"] = $userdata;
+           $_SESSION["groupdata"] = $groupResult ? mysqli_fetch_all($groupResult, MYSQLI_ASSOC) : array();
            $login = true;
-           session_start();
+           session_regenerate_id(true);
            $_SESSION['loggedin'] = true;
            $_SESSION['email'] = $email;
+           $_SESSION['role'] = 'user';
            header("location: ../Dashboard/userdash.php");
+           exit();
        }
         
     else{
@@ -102,14 +103,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         <p>Enter your credentials to access your account</p>
       </div>
 
-      <form action="../login/login.php" method= "post">
+      <form action="../login/login.php" method="post">
+        <input type="hidden" name="csrf_token" value="<?php echo e(csrf_token()); ?>">
         <div class="user">
           <i class="bx bxs-user-circle"></i>
-          <input type="text" name = "email" placeholder="Enter your username" />
+          <input type="email" name="email" placeholder="Enter your email" required />
         </div>
         <div class="pass">
           <i class="bx bxs-lock-alt"></i>
-          <input type="password" name = "password" placeholder="Enter your password" />
+          <input type="password" name="password" placeholder="Enter your password" required />
         </div>
         <div class="btn">
           <button type="submit">Sign in</button>
@@ -117,6 +119,5 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       </div>
     </form>
     <p class="last">Forgot your password? <a href="#"> Reset Password </a></p>
-    <script src="/app.js"></script>
   </body>
 </html>

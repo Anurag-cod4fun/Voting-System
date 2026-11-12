@@ -1,41 +1,95 @@
-body{
-    /* width: 500px; */
-    margin: auto;
-    background: url(img/emma-ou-yUa8ccbdphA-unsplash.jpg);
-    /* background: rgb(219, 219, 123); */
-    
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+  --navy: #10233f;
+  --navy-deep: #071629;
+  --teal: #0c9b8a;
+  --gold: #f2b84b;
+  --ink: #17233a;
+  --muted: #68768b;
+  --line: #dce5ef;
+  --paper: #f5f8fc;
 }
 
-.form{
-    
-    /* display: block; */
-    margin: 33px auto;
-    padding: 43px 30px;
-    width: 40%;
-    text-align: center;
-    
+* { box-sizing: border-box; }
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  background: radial-gradient(circle at 90% 8%, #dcefeb 0, transparent 30%), var(--paper);
 }
 
-.head
-{
-    text-align: center;
+.navbar {
+  padding: 20px 6vw;
+  background: var(--navy) !important;
 }
 
-#exampleInputEmail1
-{
-    display: inline-block;
+.navbar-brand {
+  color: #fff !important;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: -.03em;
 }
 
-.anurag{
-    display: inline-block;
-    width: 39%;
-    margin: 3px auto;
+#login1 { color: #fff !important; font-weight: 600; }
+
+.form {
+  width: min(820px, calc(100% - 40px));
+  margin: 42px auto;
+  padding: 38px 44px;
+  border: 1px solid rgba(220, 229, 239, .9);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 20px 50px rgba(16, 35, 63, .09);
 }
 
-#login1{
-    margin : 3px 14px;
+.form::before {
+  display: block;
+  width: 52px;
+  height: 5px;
+  margin-bottom: 22px;
+  border-radius: 5px;
+  content: '';
+  background: var(--gold);
 }
 
+.form::after {
+  display: block;
+  margin-top: 24px;
+  color: var(--muted);
+  content: 'Your information stays private and is used only to verify your vote.';
+  font-size: .82rem;
+}
 
+.form-heading { margin-bottom: 30px; text-align: left; }
+.form-heading .eyebrow, .eyebrow { margin: 0 0 8px; color: var(--teal); font-size: .72rem; font-weight: 700; letter-spacing: .14em; }
+.form-heading h1 { margin: 0 0 8px; color: var(--navy); font: 700 2rem 'Space Grotesk', sans-serif; letter-spacing: -.04em; }
+.form-heading p:last-child { margin: 0; color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
 
+.mb-3 { margin-bottom: 21px !important; }
+.form-label, .form b, label { color: var(--navy); font-weight: 700; }
 
+.form-control {
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: none !important;
+}
+
+.form-control:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 4px rgba(12, 155, 138, .12) !important;
+}
+
+.anurag { width: calc(50% - 7px); margin: 3px 4px 3px 0; }
+.form-text, .form small, .form d { color: var(--muted) !important; font-size: .78rem; }
+.btn-primary { border: 0; border-radius: 10px; padding: 12px 28px; background: var(--teal); font-weight: 700; }
+.btn-primary:hover { background: #087c70; }
+.alert { width: min(820px, calc(100% - 40px)); margin: 24px auto -18px; border: 0; border-radius: 10px; }
+
+@media (max-width: 620px) {
+  .form { padding: 28px 22px; }
+  .anurag { width: 100%; margin-right: 0; }
+}
