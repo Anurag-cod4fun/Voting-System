@@ -5,7 +5,7 @@ session_start(); //1
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
         include '../partials/dbconnect.php';
        
-        $email = $_POST['email'];
+        $email = trim($_POST['email']);
         $pass = $_POST['password'];
 
        $sql2 = "Select * from cand"; //2
@@ -13,9 +13,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
        $groupdata = mysqli_fetch_all($result2, MYSQLI_ASSOC); 
        $_SESSION["groupdata"] = $groupdata;
        
-       $sql = "Select * from adminlogin where email='$email' AND pass='$pass' ";  
-       $result = mysqli_query($conn , $sql);
-       $num = mysqli_num_rows($result);
+       $stmt = mysqli_prepare($conn, "Select * from adminlogin where email=? AND pass=?");
+       mysqli_stmt_bind_param($stmt, "ss", $email, $pass);
+       mysqli_stmt_execute($stmt);
+       $result = mysqli_stmt_get_result($stmt);
+       $num = ($result === false) ? 0 : mysqli_num_rows($result);
+       mysqli_stmt_close($stmt);
        if($num >= 1){
            $login = true;
            session_start();

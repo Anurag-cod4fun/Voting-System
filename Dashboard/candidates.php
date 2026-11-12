@@ -1,15 +1,62 @@
 <?php
+session_start();
+
+// Only an authenticated administrator may add candidates.
+if(!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['email'])){
+    header("location: ../login/adminlogin.php");
+    exit();
+}
+
+$uploadError = false;
+
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 include '../partials/dbconnect.php';
 
 $name = $_POST['name'];
 $Partyname = $_POST['partyname'];
 $role = $_POST['post'];
-$image = $_FILES['img']['name'];
+
+// Allow-list of image extensions. Anything else (php, phtml, phar, ...) is rejected.
+$allowed = array('jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif');
+
+$ext = strtolower(pathinfo($_FILES['img']['name'], PATHINFO_EXTENSION));
 $tmp_name = $_FILES['img']['tmp_name'];
-move_uploaded_file($tmp_name, "../Dashboard/uploads/$image");
-$sql = "INSERT INTO `cand` (`Name`, `PartyName`, `DPimage`, `Post`) VALUES ('$name', '$Partyname', '$image', '$role')";
-$result = mysqli_query($conn, $sql);
+
+if(!isset($_FILES['img']) || $_FILES['img']['error'] !== UPLOAD_ERR_OK || !array_key_exists($ext, $allowed)){
+    $uploadError = "Only JPG, JPEG, PNG and GIF images are allowed.";
+}
+elseif($_FILES['img']['size'] > 2 * 1024 * 1024){
+    $uploadError = "Image must be 2MB or smaller.";
+}
+else{
+    // Verify the real content, not the client-supplied name or MIME type.
+    $info = @getimagesize($tmp_name);
+    if($info === false || !in_array($info['mime'], $allowed, true)){
+        $uploadError = "The uploaded file is not a valid image.";
+    }
+}
+
+if($uploadError === false){
+    // Never trust the client filename: generate the stored name server-side.
+    $image = bin2hex(random_bytes(16)) . '.' . $ext;
+    $uploadDir = realpath(__DIR__ . '/uploads');
+    $destination = $uploadDir . DIRECTORY_SEPARATOR . $image;
+
+    if($uploadDir === false || !move_uploaded_file($tmp_name, $destination)){
+        $uploadError = "Could not save the uploaded image.";
+    }
+    else{
+        $stmt = mysqli_prepare($conn, "INSERT INTO `cand` (`Name`, `PartyName`, `DPimage`, `Post`, `votes`) VALUES (?, ?, ?, ?, 0)");
+        mysqli_stmt_bind_param($stmt, "ssss", $name, $Partyname, $image, $role);
+        $result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        if(!$result){
+            @unlink($destination);
+            $uploadError = "Could not add the candidate.";
+        }
+    }
+}
 }
 ?>
 
@@ -35,6 +82,12 @@ $result = mysqli_query($conn, $sql);
     <div>
         <h1 class="headline">ADD NEW CANDIDATE</h1>
     </div>
+
+    <?php if($uploadError !== false){ ?>
+    <div class="alert alert-danger" role="alert" style="max-width:600px;margin:0 auto 15px;">
+        <?php echo htmlspecialchars($uploadError, ENT_QUOTES, 'UTF-8'); ?>
+    </div>
+    <?php } ?>
 
     <div class="form-div">
         <form action="candidates.php" method= "POST" enctype="multipart/form-data">

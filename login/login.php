@@ -5,19 +5,26 @@ session_start();
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
         include '../partials/dbconnect.php';
        
-        $email = $_POST['email'];
+        $email = trim($_POST['email']);
         $pass = $_POST['password'];
        
-       $sql = "Select * from regdetails where email='$email' AND password='$pass' "; 
-       $result = mysqli_query($conn , $sql);
-       $num = mysqli_num_rows($result);
-
        $sql2 = "Select * from cand"; 
        $result2 = mysqli_query($conn, $sql2);
-
-
-       $userdata = mysqli_fetch_array($result); 
        $groupdata = mysqli_fetch_all($result2, MYSQLI_ASSOC); 
+
+       $stmt = mysqli_prepare($conn, "Select * from regdetails where email=? AND password=?");
+       mysqli_stmt_bind_param($stmt, "ss", $email, $pass);
+       mysqli_stmt_execute($stmt);
+       $result = mysqli_stmt_get_result($stmt);
+       if($result === false){
+           $num = 0;
+           $userdata = null;
+       }
+       else{
+           $num = mysqli_num_rows($result);
+           $userdata = mysqli_fetch_array($result); 
+       }
+       mysqli_stmt_close($stmt); 
 
        $_SESSION["userdata"] = $userdata; 
        $_SESSION["groupdata"] = $groupdata; 

@@ -1,0 +1,29 @@
+# Defence in depth: never execute scripts from the upload directory.
+# Even if the application-level extension check is bypassed, Apache will
+# refuse to hand these files to the PHP interpreter.
+
+# Apache 2.4 (mod_php)
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# Apache 2.2
+<IfModule mod_php5.c>
+    php_flag engine off
+</IfModule>
+
+# Block every executable suffix, not just .php
+<FilesMatch "\.(php|php[0-9]|phtml|pht|phar|phps|shtml|cgi|pl|py|sh|asp|aspx|jsp)$">
+    Require all denied
+</FilesMatch>
+
+# Serve uploads as static content only
+Options -ExecCGI -Indexes
+RemoveHandler .php .phtml .pht .phar .phps
+RemoveType .php .phtml .pht .phar .phps
